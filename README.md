@@ -1,140 +1,124 @@
-# Project Mazassumnida
+# ✈️ Traveldige
 
-Github 프로필에서 boj 프로필을 이쁘게 보여주는 프로젝트
 
-## 주의사항
+> **Travelidge**는 소상공인 및 여행업체를 위한 **온라인 예약/결제 통합 관리 시스템**입니다.  
+> 자체 플랫폼과 **네이버 스마트스토어**를 연동하여 상품 등록부터 예약, 결제, 주문 관리까지 한 번에 처리할 수 있도록 지원합니다.
 
-- **V1, V2는 1시간, mini는 하루 간격으로 업데이트됩니다.**
-- 만약 로드된 후 애니메이션을 다시 보고싶으시면 `ctrl + shift + R` 을 눌러서 강력 새로고침을 하시면 다시 보실 수 있습니다!
+- 소상공인 및 여행업체는 **쉽고 빠르게 상품을 등록**할 수 있습니다.
+- 고객은 **간편하게 예약 및 결제**를 통해 원활한 사용자 경험을 제공합니다.
+---
 
-[![Solved.ac
-프로필](http://mazassumnida.wtf/api/mini/generate_badge?boj=koosaga)](https://github.com/mazassumnida/mazassumnida)
+## 👨‍💻 개발 기간 및 인원
 
-[![Solved.ac
-프로필](http://mazassumnida.wtf/api/v2/generate_badge?boj=wonyes)](https://solved.ac/wonyes)
-[![Solved.ac
-프로필](http://mazassumnida.wtf/api/generate_badge?boj=wonyes&c=c)](https://solved.ac/wonyes)
-[![Solved.ac
-프로필](http://mazassumnida.wtf/api/v2/generate_badge?boj=wonyes)](https://solved.ac/wonyes)
+- **기간**: 2025.02 ~ 2025.05
+- **인원**: 백엔드: 1명, 프론트엔드: 1명
 
-## install
+---
 
-### Poetry를 이용할 경우
+## 🌐 배포 링크
 
-```sh
-poetry install             # 의존성 설치
-poetry shell               # 가상환경에 진입
-python manage.py runserver # 서버 실행
-```
+- [사용자 페이지](https://travelidge.shop)  
+- [관리자 페이지](https://admin.travelidge.shop)
+- [API 명세](https://api.travelidge.shop/swagger-ui)
+---
 
-### requirements.txt를 이용할 경우
+## 🗂 ERD 구조
 
-```sh
-pip install -r requirements.txt
-python manage.py runserver # 서버 실행
-```
+- [ERD Cloud에서 보기](https://www.erdcloud.com/d/mYpMAqACf4JSA5JHM )
 
-## Mazassumnida v.1.0
+<br>
 
-### Usage
+![travelidge (5)](https://github.com/user-attachments/assets/b95190c4-046e-4f08-809c-e1ff264c6810)
 
-```html
-[![Solved.ac
-프로필](http://mazassumnida.wtf/api/generate_badge?boj={handle})](https://solved.ac/{handle})
-```
+---
 
-### Screenshots
+## 🏗 시스템 아키텍처
 
-#### Ruby 🍒
+![시스템 아키텍쳐-페이지-1의 복사본 drawio (3)](https://github.com/user-attachments/assets/34de2a30-2678-474e-98a8-873e7454424a)
 
-<img src="https://i.ibb.co/LZGnH5R/2020-08-26-2-02-58.png" alt="2020-08-26-2-02-58" border="0">
 
-#### Diamond 💎
+---
 
-<img src="https://i.ibb.co/0cjvjGn/2020-08-26-2-03-10.png" alt="2020-08-26-2-03-10" border="0">
+## 🛠 기술 스택
 
-#### Platinum 💚
+### 🔙 Back-end
+- Java 17, Spring Boot 3.4.1
+- Spring Security, JWT, OAuth2
+- JPA (Hibernate), QueryDSL
+- Spring Batch
+- Toss Payments API
+- Swagger
 
-<img src="https://i.ibb.co/4VnmL99/2020-08-26-2-10-40.png" alt="2020-08-26-2-10-40" border="0">
+### ☁️ Cloud & Storage
+- Oracle Cloud Infrastructure (OCI)
+- Oracle Object Storage
 
-#### Gold 🏅
+### 🛢 Database & Caching
+- Oracle Database
+- Redis
 
-<img src="https://i.ibb.co/88n5MR4/2020-08-26-2-03-56.png" alt="2020-08-26-2-03-56" border="0">
+### ⚙ DevOps & Infra
+- Jenkins
+- Docker
+- Nginx
+---
+## 🚀 주요 기능
 
-#### Silver 💍
+### ✅ **공통**
+-  신고 처리  
+-  상품 목록 및 상세 조회  
+-  상품 문의, 1:1 문의  
 
-<img src="https://i.ibb.co/mXhLMHJ/2020-08-26-2-03-30.png" alt="2020-08-26-2-03-30" border="0">
+---
 
-#### Bronze 🍂
+### 👤 **사용자 기능**
+-  소셜 회원가입 및 로그인
+-  회원 정보 수정
+-  장바구니 관리
+-  상품 구매 및 결제 (Toss API 연동)
+-  주문 관리 (취소, 반품)  
+-  리뷰 작성 및 신고  
+-  관심상품 등록  
+-  후기 작성
+-  상품 검색 및 인기 검색어 출력  
+-  상품 문의 및 1:1 문의 작성  
 
-<img src="https://i.ibb.co/4tpFkR5/2020-08-26-2-03-40.png" alt="2020-08-26-2-03-40" border="0">
+---
 
-## Mazassumnida v.2.0
+### 🔧 **관리자 기능**
+-  관리자 로그인
+-  관리자 계정 생성 및 삭제
+-  상품 및 카테고리 관리 
+     - 자체 시스템  
+     - 네이버 스마트스토어 연동  
+-  주문 상태 관리
+     - 확인, 취소, 반품  
+     - 자체 시스템 + 네이버 스마트스토어 연동  
+-  티켓 발급 및 사용 처리
+-  리뷰 신고 관리
+-  상품 문의 및 1:1 문의 응답
+-  추천상품 등록 및 삭제
+  
+### ⚙ 시스템 기능
+- **네이버 스마트스토어 API 연동**
+   - 상품 및 주문 데이터 자동 동기화
+   - **Spring Batch**를 활용한 주문 수집, 수정 자동 처리
+- **예약 및 결제 시스템 구현**
+   - 실시간 예약 가능 여부 확인 로직
+   - **토스 결제 API** 연동을 통한 간편 결제 처리
+- **사용자 인증 및 보안 처리**
+   - **JWT** 기반 사용자 인증 시스템
+   - **OAuth2**를 통한 소셜 로그인 연동
+- **Redis**를 활용한 키워드 기반 인기 검색어 기능 구현
+- **Oracle Object Storage**를 활용하여 이미지 및 기타 정적 파일 업로드 구현
+- **멀티 도메인 구성**
+     - 사용자용 클라이언트/관리자용 어드민 페이지 구분
+- **Nginx**를 활용한 리버스 프록시 설정으로 클라이언트와 관리자 페이지 트래픽 분기 처리
+- **Let's Encrypt SSL 인증서 적용**
+  - **Certbot**을 통한 무료 SSL 인증서 발급 및 자동 갱신
+  - Nginx와 연동하여 HTTPS 보안 통신 지원
+- **CI/CD 자동화 구축**
+   - Jenkins + Docker + Nginx + Oracle Cloud를 활용한 자동 배포 파이프라인 구성 및 운영
+- **Swagger**를 통한 API 문서 자동화
 
-### Usage
 
-```html
-[![Solved.ac
-프로필](http://mazassumnida.wtf/api/v2/generate_badge?boj={handle})](https://solved.ac/{handle})
-```
-
-### Screenshots
-
-#### Ruby 🍒
-
-<img src="https://i.ibb.co/C6gc9jD/chrome-h1796lob-Nu.png" alt="chrome-h1796lob-Nu" border="0">
-
-#### Diamond 💎
-
-<img src="https://i.ibb.co/W0DTqfF/chrome-0s-RCb-MPg-Ia.png" alt="chrome-s-Xr44t-S85-B" border="0">
-
-#### Platinum 💚
-
-<img src="https://i.ibb.co/HpHCVXG/chrome-0-LDwg6-Mgw-Y.png" alt="chrome-0-LDwg6-Mgw-Y" border="0">
-
-#### Gold 🏅
-
-<img src="https://i.ibb.co/WfkLNRQ/chrome-y-AXSQ9j-Z9t.png" alt="chrome-y-AXSQ9j-Z9t" border="0">
-
-#### Silver 💍
-
-<img src="https://i.ibb.co/0rvb2LZ/chrome-q-Fhu-Ge92-Jp.png" alt="chrome-PZp-C0lw-NXK" border="0">
-
-#### Bronze 🍂
-
-<img src="https://i.ibb.co/Vg2NcZH/chrome-VBCSLd8v-HF.png" alt="chrome-VBCSLd8v-HF" border="0">
-
-## Mazassumnida v.mini
-
-### Usage
-
-```html
-[![Solved.ac
-프로필](http://mazassumnida.wtf/api/mini/generate_badge?boj={handle})](https://solved.ac/{handle})
-```
-
-### Screenshots
-
-#### Ruby 🍒
-
-<img src="https://i.ibb.co/JKncFX1/20200830-00-03-45.png" alt="20200830-00-03-45" border="0">
-
-#### Diamond 💎
-
-<img src="https://i.ibb.co/tJg1mMV/20200830-00-04-09.png" alt="20200830-00-04-09" border="0">
-
-#### Platinum 💚
-
-<img src="https://i.ibb.co/16SYvHd/20200830-00-04-24.png" alt="20200830-00-04-24" border="0">
-
-#### Gold 🏅
-
-<img src="https://i.ibb.co/nfJDBKY/20200830-00-03-26.png" alt="20200830-00-03-26" border="0">
-
-#### Silver 💍
-
-<img src="https://i.ibb.co/Q6SRDZ4/20200830-00-04-37.png" alt="20200830-00-04-37" border="0">
-
-#### Bronze 🍂
-
-<img src="https://i.ibb.co/tBW5WbQ/20200830-00-04-51.png" alt="20200830-00-04-51" border="0">
