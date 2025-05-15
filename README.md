@@ -47,6 +47,23 @@
 | 📜main.tsx            | 앱 진입점(ReactDOM.render 등)                                                               |
 --- 
 
+## 🗂 ERD 구조
+
+- [ERD Cloud에서 보기](https://www.erdcloud.com/d/mYpMAqACf4JSA5JHM )
+
+<br>
+
+![travelidge (5)](https://github.com/user-attachments/assets/b95190c4-046e-4f08-809c-e1ff264c6810)
+
+---
+
+## 🏗 시스템 아키텍처
+
+![시스템 아키텍쳐-페이지-1의 복사본 drawio (3)](https://github.com/user-attachments/assets/34de2a30-2678-474e-98a8-873e7454424a)
+
+
+---
+
 ## 🛠 기술 스택
 
 ### 🌐 Front-end
