@@ -89,11 +89,12 @@
 
 | **기술**                | **설명**                                                                                       |
 |-------------------------|-----------------------------------------------------------------------------------------------|
-| ![Jenkins](https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white) | Jenkins를 사용하여 CI/CD 파이프라인을 구축하고, 자동화된 빌드 및 배포를 관리합니다.  |
-| ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) | Docker를 활용하여 애플리케이션을 컨테이너화하고, 일관된 실행 환경을 제공합니다.     |
-| ![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white) | Nginx를 사용하여 리버스 프록시 설정 및 트래픽 분배를 효율적으로 처리합니다.          |
+| ![Jenkins](https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white) | Jenkins를 사용하여 CI/CD 파이프라인을 구축하고, 자동화된 빌드 및 배포를 관리합니다. |
+| ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) | Docker를 활용하여 애플리케이션을 컨테이너화하고, 일관된 실행 환경을 제공합니다. |
+| ![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white) | Nginx를 사용하여 리버스 프록시 설정 및 트래픽 분배를 효율적으로 처리합니다. |
 | ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white) | Vite는 프론트엔드 소스코드를 빠르게 빌드하여 정적 파일로 만들어주는 도구로, CI/CD 파이프라인의 빌드 단계에서 사용됩니다. |
-| `.env` 환경 변수        | 환경별 API 주소, 비밀키 등 민감한 정보를 안전하게 관리하며, Vite 빌드 시 자동으로 주입되어 환경에 맞는 설정을 제공합니다. |
+| ![AWS](https://img.shields.io/badge/Aws-232F3E?style=for-the-badge&logo=aws&logoColor=white) | AWS EC2를 활용하여 배포 환경을 제공하고, 서버 운영과 트래픽 관리를 효율적으로 수행합니다. |
+| ![ENV](https://img.shields.io/badge/.env-6f42c1?style=for-the-badge&logo=dotenv&logoColor=white) | 환경별 API 주소, 비밀키 등 민감한 정보를 안전하게 관리하며, Vite 빌드 시 자동으로 주입되어 환경에 맞는 설정을 제공합니다. |
 ---
 ## 🚀 주요 기능
 
