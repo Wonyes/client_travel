@@ -17,7 +17,7 @@
 
 | <img src="https://avatars.githubusercontent.com/u/186001551?v=4" width="150" height="150"/> | <img src="https://avatars.githubusercontent.com/u/92082963?v=4" width="150" height="150"/> |
 | :---: | :---: |
-| **BACK-END**<br/>[@silver-sunny](https://github.com/silver-sunny) | **FRONT-END / DESIGN**<br/>[@Wonyes](https://github.com/Wonyes) |
+| **BACK-END**<br/>[@silver-sunny](https://github.com/silver-sunny) | **FRONT-END / DESIGN / DevOps**<br/>[@Wonyes](https://github.com/Wonyes) |
 
 </div>
 
@@ -30,6 +30,64 @@
 | **사용자 페이지** | [🔗 사용자페이지 바로가기](https://travelidge.shop) |
 | **관리자 페이지** | [🔗 관리자페이지 바로가기](https://admin.travelidge.shop) |
 | **API 명세서** | [🔗 API명세서 바로가기](https://api.travelidge.shop/swagger-ui) |
+
+---
+
+## 🔧 기술적 도전과 해결 (Troubleshooting & Engineering)
+
+### 1️⃣ Toss 결제 파이프라인 구축 및 단일 라우팅 가드 (UX 최적화)
+<details open>
+<summary><b>커스텀 API 연동, 단일 주문서 유지 및 '뒤로가기' 중복 결제 완벽 차단</b></summary>
+<br />
+
+**문제 상황:** 첫 토스페이먼츠(Toss Payments) 연동 시, 기본 위젯 방식은 현재 서비스에는 적용 불가하다고 판단했습니다. 또한, 결제 완료 후 사용자가 브라우저 '뒤로가기'를 눌렀을 때 이미 결제된 상품임에도 결제창으로 재진입하게 되는 치명적인 결제 오류를 발견했습니다.
+
+**해결 방안:**
+- **토스 API 직접 연동:** 위젯 대신 API 방식으로 선회하여 `결제 요청 ➔ URL 파라미터 반환 ➔ 서버 주문 요청 및 결제 완료 ➔ 클라이언트 상태 반영`으로 이어지는 커스텀 결제 흐름을 구축했습니다.
+- **주문서 단일화 및 라우팅 제어:** 개별 번호로 주문서를 띄우지 않고 단일 라우트(`product/orderform`)에서 항상 마지막으로 요청된 상품만 뜨도록 사용성을 제어했습니다. 동시에 라우팅 가드를 설정하여, 이미 결제 완료된 건에 대해 뒤로가기를 시도하면 결제창이 아닌 '홈 화면'으로 리다이렉트 시켜 중복 결제를 원천 차단했습니다.
+</details>
+
+### 2️⃣ 상태 동기화의 함정 극복 및 TanStack Query 최적화
+<details open>
+<summary><b>새로고침 없는 '관심 상품(찜하기)' 다중 리스트 동기화 구현</b></summary>
+<br />
+
+**문제 상황:** 메인 페이지의 추천/베스트/일반 상품 리스트에 동일한 상품이 중복 노출될 수 있습니다. 한 리스트에서 찜하기(하트)를 누르면 다른 리스트에 있는 동일 상품의 하트는 불이 켜지지 않아, 사용자가 새로고침을 해야만 전체 뷰가 동기화되는 문제가 발생했습니다.
+
+**해결 방안:**
+- 단일 하트 컴포넌트에 로컬 상태를 두지 않고, 부모로부터 식별자(`id`), 상태(`favorites`), 제어 함수(`onFavorite`)를 Props로 명확히 주입받아 동일 상품 여부를 렌더링 단계에서 비교하도록 개편했습니다.
+- **TanStack Query 도입:** 공식 문서와 블로그를 깊게 탐독하며 Axios와 Query를 연동했습니다. `useMutation`을 활용해 찜하기 성공 시 해당 상품 ID와 관련된 캐시를 즉각 업데이트하여, **새로고침 없이도 모든 리스트의 하트 UI가 즉각(Optimistic) 동기화되도록 사용성을 대폭 개선**했습니다.
+</details>
+
+### 3️⃣ 백엔드 밀착 협업을 통한 API 스펙 설계 및 Constant 상태 매핑
+<details open>
+<summary><b>디자인/기획 주도 및 복잡한 커머스 상태 코드의 프론트엔드 규격화</b></summary>
+<br />
+
+**문제 상황:** 서비스 사용성 최적화를 위해 기획 단계부터 백엔드 API 스펙(요청/응답/에러 포맷) 조율에 큰 어려움이 있었습니다. 또한 커머스 특성상 취소, 환불 등 수많은 주문 상태값이 영문 문자열(`CANCEL_REQUEST` 등)로 전달되어 UI 처리가 파편화될 우려가 있었습니다.
+
+**해결 방안:**
+- **일일 기획/디자인 피드백:** Figma를 기반으로 백엔드 개발자와 매일 화면을 공유하며 협의를 진행했습니다. 보내고 받는 데이터 스펙을 하나하나 정의하고, 불필요한 페이로드를 제거했으며, 완벽한 에러 핸들링을 위해 Error Response 포맷까지 별도 규격화하여 컴포넌트에 반영했습니다.
+- **Constant 기반 Switch 매핑:** 서버에서 내려주는 영문 상태 상수(Constant)를 프론트엔드 단의 상태 객체로 분리했습니다. `Switch` 문을 활용해 `CANCEL_REQUEST` ➔ '취소' 와 같이 각 상태별 텍스트와 전용 CSS 라벨이 자동으로 렌더링되도록 코드를 구조화했습니다.
+</details>
+
+### 4️⃣ 인터랙션(Animation) 기반의 앱(App) 라이크 UX 구현
+<details open>
+<summary><b>디자인 4회 전면 개편 및 트렌디한 마이크로 인터랙션 적용</b></summary>
+<br />
+
+**해결 과정:** 최신 트렌드에 맞는 최상의 UI/UX를 찾기 위해 레퍼런스를 끝없이 취합하며 프로젝트 전체 디자인을 4번이나 전면 개편했습니다. 특히 딱딱한 웹 브라우저의 느낌을 지우기 위해, 주문 시트 등장이나 캘린더 오픈 동작 시 **마이크로 애니메이션과 인터랙션**을 정교하게 다듬어 마치 네이티브 모바일 앱(App)을 사용하는 듯한 부드러운 사용자 경험(UX 최적화)을 제공하는 데 심혈을 기울였습니다.
+</details>
+
+### 5️⃣ (DevOps) 빌드 병목 해결을 위한 AWS EC2 & Nginx 마이그레이션
+<details open>
+<summary><b>Jenkins/Docker 환경의 한계를 직접 돌파한 인프라 구축 경험</b></summary>
+<br />
+
+**해결 과정:** 초기 Jenkins와 Docker를 활용한 CI/CD 환경에서 프론트엔드 빌드/배포 속도 저하 현상이 심각했습니다. 이를 타개하기 위해 기술 블로그를 참고하여 **AWS EC2 환경으로 직접 마이그레이션을 단행**했습니다. 추가로 `Nginx`를 직접 세팅해 안정적인 웹 서버 환경을 구축하며, 문제 발생 시 인프라 단까지 파고들어 해결해 내는 역량을 증명했습니다.
+</details>
+
+<br />
 
 ---
 
@@ -103,128 +161,57 @@
   <img src="https://github.com/user-attachments/assets/8987b8d3-4028-4f88-9e0b-ae7dfab014ed" width="32%" />
   <br /><sub><i>후기 리스트 | ↳ 후기 작성 페이지 | ↳ 후기 작성 완료</i></sub>
 </p>
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/3966741e-3f6d-477b-96da-edf48ff38440" width="32%" />
-  <br /><sub><i>상품 문의 내역</i></sub>
-</p>
 </details>
-
-<br />
-
 
 ---
 
 ## 🚀 주요 기능
 
-### ✅ 공통
+### ✅ 공통 및 아키텍처
 | **기능** | **설명** |
 | :--- | :--- |
-| **📅 캘린더, 인풋, 텍스트 입력창** | 한 컴포넌트에서 종류별로 나눠서 사용 가능. 필요한 경우에만 렌더링되도록 조정됨. |
-| **💬 모달, 알림, 확인창, 토스트** | Modal, Alert, Confirm, Toast 등 다양한 UI 및 기능 요소를 한 컴포넌트에서 관리 가능. |
-| **🎨 공통 스타일 관리** | 자주 사용되는 스타일은 모두 공통으로 분리하여 재사용성을 극대화. |
-| **❤️‍🔥 좋아요 및 드래그 기능** | 여러 페이지에서 사용되는 좋아요 및 드래그 기능을 함수 형태로 분리하여 편리하게 사용 가능. |
-| **🔢 페이징 처리** | 페이징 로직을 공통으로 처리하여 일관된 사용자 경험 제공. |
-| **🧩 레이아웃** | 테이블, 아이템리스트, 드롭다운, 버튼 등 컴포넌트화를 활용해 API DATA만 입력 시 작동 가능. |
+| **📅 모듈화된 입력 컴포넌트** | 캘린더, 인풋 등을 단일 컴포넌트에서 분기 처리하여 렌더링 최적화. |
+| **💬 중앙 제어 오버레이** | `openAlert`, `openConfirm` 등 함수 호출만으로 동작하는 글로벌 Modal/Toast 시스템. |
+| **🎨 공통 스타일 관리** | 상수(Constant) 및 공통 클래스로 디자인을 분리하여 일관성 및 재사용성 극대화. |
+| **✨ 앱(App) 라이크 인터랙션** | 주문서, 캘린더 등 주요 UI 렌더링 시 부드러운 애니메이션 및 인터랙션 적용. |
+| **🔢 페이징 처리** | 페이징 로직을 공통 커스텀 훅으로 처리하여 일관된 사용자 경험 제공. |
+| **🧩 동적 레이아웃 시스템** | `ScrollTable`, 리스트, 드롭다운 등을 컴포넌트화해 API 데이터 주입 시 자동 동작. |
 
-### 📦 데이터 관리
+### 📦 데이터 및 상태 관리
 | **기능** | **설명** |
 | :--- | :--- |
-| **🗂️ 상태 관리** | React Query, Zustand 등으로 서버 데이터와 클라이언트 상태를 효율적으로 관리합니다. |
-| **🔄 비동기 처리** | React Query를 활용해 데이터 패칭, 캐싱, 리페치 등 비동기 로직을 간편하게 구현합니다. |
-| **🗑️ 삭제/수정** | 리뷰 등 데이터 삭제 시, 서버와 동기화 후 UI를 즉시 반영하여 사용자 경험을 높입니다. |
-| **📝 입력/수정** | 입력 폼, 드래그, 이미지 업로드 등 다양한 입력 UI와 데이터 바인딩을 제공합니다. |
-| **🧩 컴포넌트화** | 반복되는 데이터 UI(리스트, 썸네일 등)는 컴포넌트로 분리해 재사용성과 유지보수를 높였습니다. |
+| **🗂️ 관심사 분리 (상태 관리)** | 서버 데이터는 `React Query`로, 클라이언트 뷰 상태는 `Zustand`로 분리하여 효율적 관리. |
+| **🔄 비동기 통신 제어** | 공통 API 래핑 모듈과 React Query를 활용해 데이터 패칭, 캐싱, 리페치 로직 간소화. |
+| **🗑️ 낙관적 동기화 업데이트** | 다중 리스트에 걸친 하트(찜하기) 및 리뷰 삭제 시, 서버 통신 전 UI를 즉각 동기화 처리. |
+| **📝 에러 및 상태 매핑** | 백엔드 에러 및 영문 상태 코드(`CANCEL_REQUEST` 등)를 프론트엔드 스펙에 맞춰 정밀하게 매핑. |
 
-### 👤 사용자 기능
+### 👤 사용자 기능 (B2C)
 | **기능** | **설명** |
 | :--- | :--- |
-| **🔑 소셜 회원가입 및 로그인** | OAuth2를 활용한 소셜 로그인 및 회원가입 기능 제공 |
-| **📝 회원 정보 수정** | 사용자 프로필 및 계정 정보를 수정할 수 있는 기능 |
-| **🛒 장바구니 관리** | 상품을 장바구니에 추가, 삭제, 수정할 수 있는 기능 |
-| **💳 상품 구매 및 결제** | Toss API를 연동하여 간편 결제 및 구매 기능 제공 |
-| **📦 주문 관리** | 주문 취소, 반품 등 주문 상태를 관리할 수 있는 기능 |
-| **⭐ 리뷰 작성 및 신고** | 상품 리뷰 작성, 별점 평가 및 부적절한 리뷰 신고 기능 |
-| **❤️ 관심상품 등록** | 관심상품으로 등록하여 즐겨찾기 기능 제공 |
-| **🗣️ 후기 작성** | 구매 후 후기 작성 기능 |
-| **🔍 상품 검색 및 인기검색어** | 키워드 기반 검색 및 인기 검색어를 실시간으로 출력 |
-| **💬 상품 문의 및 1:1 문의** | 상품 관련 문의 및 1:1 문의 작성 기능 제공 |
-| **🖼️ 리뷰 이미지 및 썸네일** | 리뷰 작성 시 이미지 첨부 및 썸네일로 확인 가능 |
-| **⭐ 별점 표시** | 리뷰에 남긴 별점(평점)을 시각적으로 표시 |
-| **🗑️ 리뷰 삭제** | 리뷰 삭제 버튼 클릭 시 삭제 확인 및 삭제 기능 제공 |
-| **🕒 리뷰 작성일 표시** | 리뷰 작성 날짜 및 시간 확인 가능 |
-| **🏷️ 옵션 정보 표시** | 구매한 상품의 옵션 정보(색상, 사이즈 등) 표시 |
-| **🔗 상품 상세 이동** | 썸네일 클릭 시 해당 상품 상세 페이지로 이동 |
+| **🔑 소셜 회원가입 및 로그인** | OAuth2를 활용한 소셜 로그인, 회원가입 및 프로필 정보 수정 기능 제공 |
+| **💳 상품 구매 및 결제 연동** | **Toss API 커스텀 연동**을 통해 간편 결제 파이프라인 및 중복 결제 방지 가드 구축 |
+| **📦 주문 라이프사이클 관리** | 단일 주문서 폼(`/orderform`) 제공 및 주문 취소/반품 등 상태 관리 기능 |
+| **⭐ 리뷰 및 커뮤니티** | 리뷰 작성(이미지 첨부), 별점 평가, 썸네일 지원 및 부적절 리뷰 신고 시스템 |
+| **🔍 상품 검색 및 필터링** | 실시간 인기 검색어 출력, 키워드 검색 및 관심 상품(즐겨찾기) 기능 제공 |
+| **💬 실시간 고객 소통** | 상품 상세 페이지 직접 문의 및 마이페이지 1:1 문의 내역 관리 시스템 |
 | **🖱️ 드래그 스크롤** | 여러 이미지가 있을 때 마우스 드래그로 가로 스크롤 지원 |
 
-<br />
-
-
----
-
-## 🛠 기술 스택
-
-### 🌐 Front-end
-| **라이브러리** | **설명** | **버전** |
-| :--- | :--- | :--- |
-| ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white) | React를 사용하여 동적인 UI를 구현하고, Vite로 빠르고 효율적인 개발 환경을 제공합니다. | 18.2.0 |
-| ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white) | Vite를 사용하여 빠른 빌드와 핫 리로딩을 통해 개발 생산성을 극대화합니다. | 5.3.1 |
-| ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) | TypeScript로 타입 안전성을 강화하여, 코드 작성 시 오류를 사전에 예방합니다. | 5.7 |
-| ![React Router](https://img.shields.io/badge/React%20Router-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white) | React Router를 사용하여 애플리케이션 내의 페이지 간 네비게이션을 구현합니다. | 7.2.0 |
-| ![React Query](https://img.shields.io/badge/TanStack%20Query-FF4154?style=for-the-badge&logo=reactquery&logoColor=white) | React Query로 서버 데이터를 캐싱하고, API 통신을 효율적으로 관리합니다. | 5.74.4 |
-| ![Axios](https://img.shields.io/badge/Axios-5A29E3?style=for-the-badge&logo=axios&logoColor=white) | Axios를 사용하여 API 통신을 처리하고, token 검사 및 요청을 관리합니다. | 1.0.2 |
-| ![Zustand](https://img.shields.io/badge/Zustand-FF0000?style=for-the-badge) | Zustand로 애플리케이션의 상태를 효율적으로 관리합니다. | 5.0.4 |
-| ![Styled Components](https://img.shields.io/badge/Styled%20Components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white) | Styled-Components를 활용해 컴포넌트 단위로 스타일을 정의하고, 코드의 재사용성을 높였습니다. | 6.1.15 |
-| ![Framer Motion](https://img.shields.io/badge/Framer%20Motion-00C853?style=for-the-badge&logo=framer&logoColor=white) | Framer Motion을 활용하여 애니메이션을 추가하여 사용자 경험을 향상시킵니다. | 12.5.0 |
-| ![Swiper](https://img.shields.io/badge/Swiper-6A5DFF?style=for-the-badge&logo=swiper&logoColor=white) | Swiper를 사용하여 다양한 슬라이더 UI를 구현합니다. | 11.2.6 |
-| ![Date-Fns](https://img.shields.io/badge/Date--Fns-1D61D1?style=for-the-badge&logo=date-fns&logoColor=white) | Date-Fns를 사용하여 날짜와 시간을 효율적으로 처리합니다. | 4.1.0 |
-
-### ⚙ CI/CD
-| **기술** | **설명** |
+### 🔧 관리자 기능 (Admin)
+| **기능** | **설명** |
 | :--- | :--- |
-| ![Jenkins](https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white) | Jenkins를 사용하여 CI/CD 파이프라인을 구축하고, 자동화된 빌드 및 배포를 관리합니다. |
-| ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) | Docker를 활용하여 애플리케이션을 컨테이너화하고, 일관된 실행 환경을 제공합니다. |
-| ![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white) | Nginx를 사용하여 리버스 프록시 설정 및 트래픽 분배를 효율적으로 처리합니다. |
-| ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white) | Vite는 프론트엔드 소스코드를 빠르게 빌드하여 정적 파일로 만들어주는 도구로, CI/CD 파이프라인의 빌드 단계에서 사용됩니다. |
-| ![AWS](https://img.shields.io/badge/Aws-232F3E?style=for-the-badge&logo=aws&logoColor=white) | AWS EC2를 활용하여 배포 환경을 제공하고, 서버 운영과 트래픽 관리를 효율적으로 수행합니다. |
-| ![ENV](https://img.shields.io/badge/.env-6f42c1?style=for-the-badge&logo=dotenv&logoColor=white) | 환경별 API 주소, 비밀키 등 민감한 정보를 안전하게 관리하며, Vite 빌드 시 자동으로 주입되어 환경에 맞는 설정을 제공합니다. |
+| **🤝 이기종 플랫폼 연동** | **네이버 스마트스토어 API**와 연동하여 외부 상품 및 주문 데이터를 실시간 동기화 |
+| **🔑 시스템 보안 및 통제** | 어드민 계정 로그인 및 관리자 권한(생성/삭제) 접근 제어 |
+| **🗂️ 통합 인벤토리 관리** | 자체 플랫폼 카테고리/상품 설정 및 메인 페이지 추천 상품 큐레이션 |
+| **📦 클레임 프로세스 제어** | 취소/환불 요청에 대한 정밀한 승인/거부 모달 및 반품 상태 관리 |
+| **🎫 티켓 발급 및 사용 처리** | 예약 티켓 발급 및 사용 상태를 관리 |
 
 <br />
 
----
 
-## 🏗 시스템 & DB 아키텍처
-
-<div align="center">
-  <table width="100%">
-    <tr>
-      <td width="50%" align="center"><b>Infrastructure Architecture</b></td>
-      <td width="50%" align="center"><b><a href="https://www.erdcloud.com/d/mYpMAqACf4JSA5JHM">Database ERD (Cloud에서 보기)</a></b></td>
-    </tr>
-    <tr>
-      <td align="center"><img src="https://github.com/user-attachments/assets/34de2a30-2678-474e-98a8-873e7454424a" width="95%" alt="Architecture" /></td>
-      <td align="center"><a href="https://www.erdcloud.com/d/mYpMAqACf4JSA5JHM"><img src="https://github.com/user-attachments/assets/b95190c4-046e-4f08-809c-e1ff264c6810" width="95%" alt="ERD" /></a></td>
-    </tr>
-  </table>
-</div>
-
+<details>
+<summary style="font-size: 1.2rem; font-weight: bold; cursor: pointer; color: #666666;">⚙️ [Admin] 관리자 시스템 스크린샷 갤러리 (클릭)</summary>
 <br />
-
----
-
-## 🌐 Front-end 폴더 구조
-📦`src`
-
-| **폴더/파일** | **설명** |
-| :--- | :--- |
-| 📂`api` | API 호출, 인터셉터, react-query 관련 훅 및 설정 관리 |
-| 📂`assets` | 이미지, 스타일 등 정적 자원 관리 |
-| 📂`components` | UI 컴포넌트 모음 (공통, 장바구니, 헤더, 마이페이지, 상품, 검색 등) |
-| 📂`constant` | 상수 및 공통적으로 사용하는 훅 관리 |
-| 📂`hook` | 캘린더, 오버레이, 페이징, 인풋 등 다양한 커스텀 훅 및 공통 기능 제공 |
-| 📂`pages` | 라우팅 및 페이지 단위 컴포넌트 관리 |
-| 📂`stores` | 전역 상태 관리(예: recoil, zustand 등) |
-| 📂`types` | 타입스크립트 타입 정의 |
-| 📂`utils` | 유틸리티 함수 모음 |
-| 📜`App.tsx` | 앱의 루트 컴포넌트 |
-| 📜`index.css` | 전역 스타일 정의 |
-| 📜`main.tsx` | 앱 진입점(ReactDOM.render 등) |
+<table width="100%">
+  <tr>
+    <td width="50%"><img src="https://github.com/user-attachments/assets/0f622164-4072-4b60-bead-8f6ce69c082a" /></td>
+    <td width="50%"><img src="
