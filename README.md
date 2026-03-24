@@ -264,10 +264,4 @@
 <br />
 
 
-<details>
-<summary style="font-size: 1.2rem; font-weight: bold; cursor: pointer; color: #666666;">⚙️ [Admin] 관리자 시스템 스크린샷 갤러리 (클릭)</summary>
-<br />
-<table width="100%">
-  <tr>
-    <td width="50%"><img src="https://github.com/user-attachments/assets/0f622164-4072-4b60-bead-8f6ce69c082a" /></td>
-    <td width="50%"><img src="
+
